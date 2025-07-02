@@ -10,6 +10,16 @@ __global__ void vectorAdd(int *A, int *B, int *C, int n) {
     }
 }
 
+void verifyResult(int *C) {
+    for (int i = 0; i < SIZE; i++) {
+        if (C[i] != SIZE) {  // Each element should be SIZE - 1
+            printf("Error at index %d: expected %d, got %d\n", i, SIZE - 1, C[i]);
+            return;
+        }
+    }
+    printf("All results are correct!\n");
+}
+
 int main() {
     int *A, *B, *C;
     int *d_A, *d_B, *d_C;
@@ -54,13 +64,7 @@ int main() {
     cudaEventElapsedTime(&milliseconds, start, stop);
     printf("Execution time on GPU: %f milliseconds\n", milliseconds);
 
-    // Verify the result
-    for (int i = 0; i < SIZE; i++) {
-        if (C[i] != SIZE) {
-            printf("Error at index %d: expected %d, got %d\n", i, SIZE, C[i]);
-            break;
-        }
-    }
+    verifyResult(C);
 
     cudaFree(d_A);
     cudaFree(d_B);
